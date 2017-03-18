@@ -118,3 +118,83 @@ l
 (list? (car l))
 
 (append l k)
+
+;flatten list
+;nonrecursive
+(define (flatten list)
+        (cond ((null? list) list)
+              ((list? (car list)) (append (flatten (car list)) (flatten (cdr list))))
+              (else (cons (car list) (flatten (cdr list))))
+        )
+
+)
+
+(flatten '((2 1)(6 7 (9)) 5))
+
+(define (sorted? list)
+        (or (<= (length list) 1) (and (<= (car list) (car (cdr list)))
+                                      (sorted? (cdr list))))
+)
+
+(sorted? '(2 7 3 10))
+(sorted? '(1 2 3 4))
+
+
+
+(append '(2 3 4) '(5 6 7))
+(reverse '(2 3 4))
+
+;(square-list '(2 3))
+
+;tail recursion
+(define print-square (lambda (low high)
+                       (cond ((> low high) '())
+                             (else (display (* low low))
+                                      (newline)
+                                      (print-square (+ 1 low) high)))))
+
+(define square-list (lambda (L)
+                      (if (null? L) '()
+                          (cons (* (car L) (car L)) (square-list (cdr L))))))
+
+
+;high order functions
+(define (f x) (+ x 1))
+(define (g x) (* 3 x))
+
+(define (compose f g) (lambda(x) (f (g x))))
+
+((compose f g) 4)
+
+(define make-double (lambda (f) (lambda(x) (f x x))))
+
+(define square2 (make-double *))
+
+(square2 2 )
+
+(define double (make-double +))
+
+(double 6)
+;---------------------------
+(define (m f L)
+              (if (null? L) '()
+                  (cons (f (car L)) (m f (cdr L)))))
+
+(define square (lambda (x) (* x x)))
+
+(define square-lst (lambda (L) (m square L)))
+
+(square-lst '(5 10))
+;---------------------------
+
+(define (filter f lst)
+       (cond ((null? lst) '())
+            ((f (car lst)) (cons (car lst) (filter f (cdr lst))))
+            (else (filter f (cdr lst)))))
+
+(filter integer? '(6 3.4 "hello" 4 2.3 #t 9))
+;high order functions
+
+(map double '(6 10 20))
+
+(map filter integer? '((4 5 9.2) '(12)))

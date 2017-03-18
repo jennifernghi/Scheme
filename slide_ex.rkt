@@ -1,0 +1,198 @@
+(define grade 85)
+
+; (if (condition) <true> <false>)
+
+(if (>= grade 90) "A"
+    (if (>= grade 80) "B"
+        (if (>=grade 70) "C"
+            (if (>= grade 60) "D" "F")
+         )
+      )
+)
+
+; multibranch conditionals
+
+;(cond (<c1><e1>)
+;      (<c2><e2>)
+;          ...
+;      (<cn><en>)
+;      (else <else-expression>))
+
+(cond ((>= grade 90) "A")
+      ((>= grade 80) "B")
+      ((>= grade 70) "C")
+      ((>= grade 60) "D")
+      (else "F")
+)
+
+;lamda
+;evaluate to anonymous functions
+;(lambda (<formal-parameter>) <body>)
+
+((lambda (x) (+ 1 x)) 5); anonymous
+
+;bind the function
+;(define <name>(lambda(<formal-parameter>) <body>))
+(define increment(lambda(x) (+ 1 x)))
+;== (define (<name> <formal-parameter>) <body>)
+(define (increment2 x) (+ 1 x))
+
+
+(increment 5)
+(increment2 6)
+
+;square
+
+(define (square x) (* x x))
+
+(square 6)
+
+;celsius->fahrenheit
+
+(define (celsius->fahrenheit x) (+ (* 1.8 x) 32))
+
+(celsius->fahrenheit 0)
+
+;cons build pairs
+;list built on top of pair
+(cons 1 2)
+
+(cons 1 (cons 2 '()))
+
+(define a (cons 1 (cons 2 (cons 3 '()))))
+
+a
+(list? a)
+(car a)
+
+(cdr a)
+
+(cdr (cdr a))
+"eq?"
+;eq? compare object not value
+(eq? 5 5) ;->#t same type
+(eq? 2 2.0) ;#f int and double
+(eq? "a" "a")
+
+"="
+;= 2 num are equal
+(= 2 2)
+(= 2.5 2.5)
+(= 2 3)
+;(= '() '()) ;error
+"eqv"
+;eqv? sane as eq? #t for the same primitive type
+(eqv? 2 3)
+(eqv? 2 2.0)
+(eqv? "a" "a")
+
+"equal" ; like eq? eqv? list, vector ...
+(define x '(1 2))
+(define y '(1 2))
+(equal? x y)
+(eqv? x y)
+;factorial
+;non-recursive
+(define (nrfactorial n)
+        (if (= n 0) 1
+            (* n (nrfactorial (- n 1)))
+        )
+)
+
+(nrfactorial 5)
+
+;count element in a list
+(define (count e list)
+        (cond ((null? list) 0)
+              ((eqv? e (car list)) (+ 1 (count e (cdr list))))
+              (else (count e (cdr list))))
+)
+
+(count 4 '("hello" 2 3 4 4))
+(count 3 '(2))
+
+(define l '(1 (2 4) (2 5)))
+(define k '(1))
+l
+
+(list? (car l))
+
+(append l k)
+
+;flatten list
+;nonrecursive
+(define (flatten list)
+        (cond ((null? list) list)
+              ((list? (car list)) (append (flatten (car list)) (flatten (cdr list))))
+              (else (cons (car list) (flatten (cdr list))))
+        )
+
+)
+
+(flatten '((2 1)(6 7 (9)) 5))
+
+(define (sorted? list)
+        (or (<= (length list) 1) (and (<= (car list) (car (cdr list)))
+                                      (sorted? (cdr list))))
+)
+
+(sorted? '(2 7 3 10))
+(sorted? '(1 2 3 4))
+
+
+
+(append '(2 3 4) '(5 6 7))
+(reverse '(2 3 4))
+
+;(square-list '(2 3))
+
+;tail recursion
+(define print-square (lambda (low high)
+                       (cond ((> low high) '())
+                             (else (display (* low low))
+                                      (newline)
+                                      (print-square (+ 1 low) high)))))
+
+(define square-list (lambda (L)
+                      (if (null? L) '()
+                          (cons (* (car L) (car L)) (square-list (cdr L))))))
+
+
+;high order functions
+(define (f x) (+ x 1))
+(define (g x) (* 3 x))
+
+(define (compose f g) (lambda(x) (f (g x))))
+
+((compose f g) 4)
+
+(define make-double (lambda (f) (lambda(x) (f x x))))
+
+(define square2 (make-double *))
+
+(square2 2 )
+
+(define double (make-double +))
+
+(double 6)
+;---------------------------
+(define (m f L)
+              (if (null? L) '()
+                  (cons (f (car L)) (m f (cdr L)))))
+
+(define square (lambda (x) (* x x)))
+
+(define square-lst (lambda (L) (m square L)))
+
+(square-lst '(5 10))
+;---------------------------
+
+(define (filter f lst)
+       (cond ((null? lst) '())
+            ((f (car lst)) (cons (car lst) (filter f (cdr lst))))
+            (else (filter f (cdr lst)))))
+
+(filter integer? '(6 3.4 "hello" 4 2.3 #t 9))
+;high order functions
+
+(map double '(6 10 20))
