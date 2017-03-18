@@ -102,6 +102,9 @@ a
 (nrfactorial 5)
 
 ;count element in a list
+
+(display "non tail-recursive count")
+(newline)
 (define (count e list)
         (cond ((null? list) 0)
               ((eqv? e (car list)) (+ 1 (count e (cdr list))))
@@ -111,6 +114,15 @@ a
 (count 4 '("hello" 2 3 4 4))
 (count 3 '(2))
 
+(display "tail-recursive count")
+(newline)
+
+(define (tcount e list count-so-far)
+        (cond ((null? list) count-so-far)
+              ((eqv? e (car list)) (tcount e (cdr list) (+ 1 count-so-far)))
+              (else (tcount e (cdr list) count-so-far))))
+
+(tcount 3 '(3 3 3 3 2) 0)
 (define l '(1 (2 4) (2 5)))
 (define k '(1))
 l
@@ -193,6 +205,18 @@ l
             (else (filter f (cdr lst)))))
 
 (filter integer? '(6 3.4 "hello" 4 2.3 #t 9))
+
+(display "tail-recursive filter")
+(newline)
+
+(define (tfilter f lst sofar)
+          (cond ((null? lst) sofar)
+                ((f (car lst)) (tfilter f (cdr lst) (append sofar (list (car lst)))))
+                (else (tfilter f (cdr lst) sofar))
+                )
+  )
+
+(tfilter integer? '(2 4.5 6) '())
 ;high order functions
 
 (map double '(6 10 20))
