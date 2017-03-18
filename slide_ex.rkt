@@ -220,3 +220,34 @@ l
 ;high order functions
 
 (map double '(6 10 20))
+
+(define x 10)
+(let (
+      (x 1)
+      (y 2)
+      (z 3)) (+ x y z))
+
+x
+
+(define (index e seq)
+        (cond ((null? seq) -1)
+              ((eqv? e (car seq)) 0)
+              ((eq? (index e (cdr seq)) -1) -1)
+              (else (+ 1 (index e (cdr seq))))))
+
+(index 5 '(0 5 1))
+(index 5 '(0 6 1))
+(index 5 '(0 2 3 5))
+
+
+(define (indexlet e seq)
+        (cond ((null? seq) -1)
+              ((eqv? e (car seq)) 0)
+              (else
+                  (let ((result (indexlet e (cdr seq))))
+                    (if (eq? result -1) -1 (+1 result))
+                   )
+               )
+         ))
+
+(index 5 '(0 2 3 5))
